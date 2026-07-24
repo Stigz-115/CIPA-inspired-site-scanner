@@ -13,10 +13,21 @@ import csv
 import pandas as pd
 import streamlit as st
 
-from scanner import scan_many, check_chromium, PLAYWRIGHT_AVAILABLE
+from scanner import scan_many, ensure_chromium, PLAYWRIGHT_AVAILABLE
 from remediation import build_recommendations
 
 st.set_page_config(page_title="Freshpaint CIPA Consent Audit", page_icon="🛡️", layout="wide")
+
+
+# ---- Bootstrap: install Chromium browser binary on first load ----
+# Streamlit Cloud installs the playwright *Python* package via requirements.txt
+# but does NOT run `playwright install chromium`.  This cached call fetches the
+# browser binary once per app lifecycle so live scanning works.
+@st.cache_resource
+def _bootstrap_chromium():
+    return ensure_chromium()
+
+_chromium_ready = _bootstrap_chromium()
 
 st.title("🛡️ Freshpaint CIPA / Consent Audit")
 st.caption(
@@ -32,7 +43,7 @@ if not PLAYWRIGHT_AVAILABLE:
         "results generated from the tracker signature database. Install "
         "Playwright + Chromium for live site scanning."
     )
-elif not check_chromium():
+elif not _chromium_ready:
     st.warning(
         "⚠️ **Demo mode (Chromium unavailable).** Playwright is installed but the "
         "Chromium browser binary could not be launched. Scans will use simulated "

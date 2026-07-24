@@ -76,6 +76,33 @@ def check_chromium():
     return _CHROMIUM_OK
 
 
+def ensure_chromium():
+    """Install the Chromium browser binary if missing, then re-check.
+
+    Call this once at app startup (e.g. via st.cache_resource) so that on
+    hosting platforms like Streamlit Cloud — where `playwright install` is
+    not run during dependency setup — the browser binary is fetched on first
+    boot.  Returns True if live scanning is available after the attempt.
+    """
+    global _CHROMIUM_OK
+    if not PLAYWRIGHT_AVAILABLE:
+        return False
+    # If already known-good, skip.
+    if _CHROMIUM_OK:
+        return True
+    import subprocess, sys
+    try:
+        subprocess.run(
+            [sys.executable, "-m", "playwright", "install", "chromium"],
+            capture_output=True, timeout=180,
+        )
+    except Exception:
+        pass
+    # Reset cache and re-check.
+    _CHROMIUM_OK = None
+    return check_chromium()
+
+
 # ---------------------------------------------------------------------------
 # Demo / mock mode
 # ---------------------------------------------------------------------------
