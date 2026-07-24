@@ -1,0 +1,10 @@
+[project]
+name = "freshpaint-cipa-consent-audit"
+version = "1.0.0"
+description = "Bulk-scan websites for third-party trackers that fire before consent — CIPA wiretapping risk audit with Freshpaint remediation guidance."
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.30",
+    "playwright>=1.40",
+    "pandas>=2.0",
+]

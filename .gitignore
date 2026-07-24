@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+tasks.json
+uv.lock
+.streamlit/
