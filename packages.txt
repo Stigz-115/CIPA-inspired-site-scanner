@@ -1,5 +1,3 @@
-# apt packages required by Playwright's headless Chromium.
-# (Used by Streamlit Cloud / Workshop hosting to install system libs.)
 libnss3
 libnspr4
 libatk1.0-0
